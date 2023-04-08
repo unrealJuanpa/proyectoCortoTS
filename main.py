@@ -24,6 +24,9 @@ psi = False
 pno = False
 repr = False
 
+f = -1
+i = -1
+
 # freq, intensidad
 results = []
 
@@ -37,19 +40,51 @@ while True:
         btn = np.argmax(lc)
         print(btn)
 
+        ffm = f"la frecuencia {freq[cf]} Hz, intensidad de {dbi[cdbi]} dB, duracion de {duracionplay}"
+
+        if len(results) >= 5:
+            ffm = f"la frecuencia {f} Hz, intensidad de {i} dB, duracion de {duracionplay}"
+
         if btn == 0:
             cb += 1
             print("."*cb)
         elif btn == 1:
             if repr:
-                print(f"Si ha escuchado la frecuencia {freq[cf]} Hz, intensidad de {dbi[cdbi]} dB, duracion de {duracionplay}")
+                print(f"Si ha escuchado {ffm}")
                 repr = False
-                utils.insert(freq[cf], duracionplay, dbi[cdbi], 1)
+
+                if len(results) < 5:
+                    utils.insert(freq[cf], duracionplay, dbi[cdbi], 1)
+                    results.append([freq[cf], dbi[cdbi]])
+                else:
+                    utils.insert(f, duracionplay, i, 1)
+                    results.append([f, i])
         elif btn == 2:
             if repr:
-                print(f"No ha escuchado la frecuencia {freq[cf]} Hz, intensidad de {dbi[cdbi]} dB, duracion de {duracionplay}")
+                print(f"No ha escuchado {ffm}")
                 repr = False
-                utils.insert(freq[cf], duracionplay, dbi[cdbi], 0)
+
+                if len(results) < 5:
+                    utils.insert(freq[cf], duracionplay, dbi[cdbi], 0)
+                    results.append([freq[cf], 0])
+                else:
+                    utils.insert(f, duracionplay, i, 0)
+                    results.append([f, 0])
+
+        if len(results) >= 5:
+            s = input("Finalizar audiometria? (s/n): ").strip().lower() == 's'
+
+            if s:
+                print("Guardando resultados...")
+                utils.generar_pdf_audiometria(results)
+                print("Audiometria finalizada...")
+                exit()
+
+            f = float(input("Ingrese la frecuencia (Hz): "))
+            i = float(input("Ingrese la intensidad (dB): "))
+            print("Reproduciendo...")
+            utils.play_frecuency(f, duracionplay, i)
+            repr = True
     else:
         if cb == 1:
             if mc == 0:
@@ -66,7 +101,7 @@ while True:
                 mc = 1
             elif mc == 1:
                 print("Reproduccion iniciada!")
-                play_frequency(freq[cf], duracionplay, dbi[cdbi])
+                utils.play_frequency(freq[cf], duracionplay, dbi[cdbi])
                 repr = True
                 mc = 0
         cb = 0
