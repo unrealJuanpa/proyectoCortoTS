@@ -16,7 +16,7 @@ dbi = [20, 40, 60]
 mc = 0
 cb = 0
 cf = -1
-cdbi = 0
+cdbi = -1
 
 duracionplay = 3
 
@@ -83,7 +83,7 @@ while True:
             f = float(input("Ingrese la frecuencia (Hz): "))
             i = float(input("Ingrese la intensidad (dB): "))
             print("Reproduciendo...")
-            utils.play_frecuency(f, duracionplay, i)
+            utils.play_frequency(f, duracionplay, i)
             repr = True
     else:
         if cb == 1:

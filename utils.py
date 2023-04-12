@@ -2,8 +2,13 @@ import numpy as np
 import sounddevice as sd
 import sqlite3
 from datetime import datetime
+import matplotlib
+matplotlib.use('Agg')
+
 import matplotlib.pyplot as plt
 from reportlab.pdfgen import canvas
+
+sd.default.device = 24
 
 
 def play_frequency(frequency:float, duration:float, decibels:float):
@@ -38,7 +43,7 @@ def generar_pdf_audiometria(resultados_audiometria):
     ax.set_xlabel('Frecuencia (Hz)')
     ax.set_ylabel('Nivel de audición (dB HL)')
     ax.set_title('Audiometría')
-    ax.plot([r[0] for r in resultados_audiometria], [r[1] for r in resultados_audiometria], 'o-')
+    ax.stem([r[0] for r in resultados_audiometria], [r[1] for r in resultados_audiometria], 'o-')
     
     # Obtener la fecha y hora actual
     fecha_hora_actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
