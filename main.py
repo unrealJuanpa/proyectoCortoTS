@@ -3,6 +3,7 @@ import AtmelCom
 import time
 import numpy as np
 import utils
+from datetime import datetime
 
 
 th = 900 # threshold de corriente de pulsacion, default 700
@@ -55,10 +56,10 @@ while True:
 
                 if len(results) < 5:
                     utils.insert(freq[cf], duracionplay, dbi[cdbi], 1)
-                    results.append([freq[cf], dbi[cdbi]])
+                    results.append([freq[cf], dbi[cdbi], 1])
                 else:
                     utils.insert(f, duracionplay, i, 1)
-                    results.append([f, i])
+                    results.append([f, i, 1])
         elif btn == 2:
             if repr:
                 print(f"No ha escuchado {ffm}")
@@ -66,17 +67,19 @@ while True:
 
                 if len(results) < 5:
                     utils.insert(freq[cf], duracionplay, dbi[cdbi], 0)
-                    results.append([freq[cf], 0])
+                    results.append([freq[cf], dbi[cdbi], 0])
                 else:
                     utils.insert(f, duracionplay, i, 0)
-                    results.append([f, 0])
+                    results.append([f, i, 0])
 
         if len(results) >= 5:
             s = input("Finalizar audiometria? (s/n): ").strip().lower() == 's'
 
             if s:
                 print("Guardando resultados...")
-                utils.generar_pdf_audiometria(results)
+                jklm = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                utils.generar_pdf_audiometria([c[:2] for c in results if c[2] == 1], f'escuchadas-{jklm}')
+                utils.generar_pdf_audiometria([c[:2] for c in results if c[2] != 1], f'no-escuchadas-{jklm}')
                 print("Audiometria finalizada...")
                 exit()
 

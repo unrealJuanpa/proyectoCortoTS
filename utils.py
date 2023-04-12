@@ -37,7 +37,7 @@ def select():
     conn.close()
     return ret
 
-def generar_pdf_audiometria(resultados_audiometria):
+def generar_pdf_audiometria(resultados_audiometria, pref):
     # Crear la figura de Matplotlib
     fig, ax = plt.subplots()
     ax.set_xlabel('Frecuencia (Hz)')
@@ -53,10 +53,10 @@ def generar_pdf_audiometria(resultados_audiometria):
     fig.subplots_adjust(top=0.8, bottom=0.2)
     
     # Generar el PDF con la imagen de Matplotlib y la fecha y hora actual centradas
-    nombre_archivo = f'Audiometria_{fecha_hora_actual}.pdf'
+    nombre_archivo = f'Audiometria_{pref}.pdf'
     c = canvas.Canvas(nombre_archivo)
     c.setFontSize(20)
-    c.drawCentredString(300, 750, f'Audiometría realizada el {fecha_hora_actual}')
+    c.drawCentredString(300, 750, f'Audiometría realizada - {pref}')
     plt.savefig('audiometria.png')
     c.drawInlineImage('audiometria.png', 100, 300, width=400, height=400)
     c.save()
